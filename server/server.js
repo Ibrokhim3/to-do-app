@@ -15,8 +15,9 @@ let app = http.createServer((req, res) => {
       res.end(JSON.stringify(tasks));
     }
   }
+  console.log(req.method);
   if (req.method === "POST") {
-    if (req.url === "/create-task") {
+    if (req.url === "/tasks") {
       req.on("data", (chunk) => {
         let { task } = JSON.parse(chunk);
 

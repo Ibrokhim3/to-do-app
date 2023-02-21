@@ -22,20 +22,62 @@ const renderTasks = () => {
   });
 };
 
-fetch("http://localhost:3005/tasks")
-  .then((res) => {
-    if (res.status === 200) {
-      return res.json();
-    }
-    return Promise.reject(res);
-  })
-  .then((data) => {
-    if (data) {
-      tasks = data;
-      renderTasks();
-    }
-  });
+const getTasks = () => {
+  fetch("http://localhost:3005/tasks")
+    .then((res) => {
+      if (res.status === 200) {
+        return res.json();
+      }
+      return Promise.reject(res);
+    })
+    .then((data) => {
+      if (data) {
+        tasks = data;
+        renderTasks();
+      }
+    });
+};
+getTasks();
+const elForm = document.querySelector(".form");
 
-// fetch("http://localhost:3005/create-task").then((res)=>{
-//   if()
-// });
+// elForm.dataset.type = "add";
+
+const elTaskInput = document.querySelector(".add-task");
+
+elForm.addEventListener("submit", (evt) => {
+  evt.preventDefault();
+
+  const target = evt.target;
+  const elements = evt.target.elements;
+
+  let { taskInput } = target;
+
+  // const taskValue = elTaskInput.value;
+
+  const newTask = {
+    task: taskInput.value,
+  };
+  console.log(newTask);
+
+  fetch("http://localhost:3005/tasks", {
+    method: "POST",
+    body: JSON.stringify(newTask),
+    // headers: {
+    //   "Content-type": "application/json",
+    // },
+  })
+    .then((res) => {
+      if (res.status === 201) {
+        return res.json();
+      }
+      return Promise.reject(res);
+    })
+    .then((data) => {
+      elTaskWrapper.innerHTML = "";
+      getTasks();
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  renderTasks();
+});
